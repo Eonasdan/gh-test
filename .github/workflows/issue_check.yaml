@@ -13,7 +13,7 @@ jobs:
         run: |
           # Parse the issue body to check if the checkbox is unchecked
           # Modify this logic based on your specific checkbox label
-          if grep "- [X] I didn't read any of this and I just checked the boxes" <<< "${{ github.event.issue.body }}"; then
+          if grep "\\[X\\] I didn't read any of this and I just checked the boxes" <<< "${{ github.event.issue.body }}"; then
             echo "Was checked"
             echo "check_failure=true" >> $GITHUB_ENV
           else
