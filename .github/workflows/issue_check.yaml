@@ -8,6 +8,7 @@ jobs:
   close-issue:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v3
       - name: Check if checkbox is checked
         id: checkbox-check
         run: |
@@ -27,3 +28,9 @@ jobs:
           gh issue close ${{ github.event.issue.number }} --comment "Auto-closing issue"
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Adjust labels
+        if: env.check_failure == 'true'
+        uses: shivfu/issue-labeler@v2  # Use the issue-labeler action
+          with:
+            issue-number: ${{ github.issue.number }}
+            labels: ['State: Invalid']  # Clear any existing labels (optional)
