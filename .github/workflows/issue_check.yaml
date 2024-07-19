@@ -22,7 +22,7 @@ jobs:
           fi
 
       - name: Close issue if checkbox is unchecked
-        if: env.FAILURE == 'true'
+        if: env.check_failure == 'true'
         run: |
           gh issue close ${{ github.event.issue.number }} --comment "Auto-closing issue"
         env:
