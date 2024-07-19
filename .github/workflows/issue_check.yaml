@@ -1,0 +1,27 @@
+on:
+  issues:
+    types:
+      - opened
+      - edited
+
+jobs:
+  close-issue:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check if checkbox is unchecked
+        id: checkbox-check
+        run: |
+          # Parse the issue body to check if the checkbox is unchecked
+          # Modify this logic based on your specific checkbox label
+          if grep -q "[X] I didn't read any of this and I just checked the boxes" ${{ github.event.issue.body }}; then
+            echo "::set-output name=checked::true"
+          else
+            echo "::set-output name=checked::false"
+          fi
+
+      - name: Close issue if checkbox is unchecked
+        if: steps.checkbox-check.outputs.checked == 'true'
+        run: |
+          gh issue close ${{ github.event.issue.number }} --comment "Auto-closing issue"
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
