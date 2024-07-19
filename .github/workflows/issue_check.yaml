@@ -13,16 +13,16 @@ jobs:
         run: |
           # Parse the issue body to check if the checkbox is unchecked
           # Modify this logic based on your specific checkbox label
-          if grep -q "[X] I didn't read any of this and I just checked the boxes" "${{ github.event.issue.body }}"; then
+          if grep -q "[X] I didn't read any of this and I just checked the boxes" <<< "${{ github.event.issue.body }}"; then
             echo "Was checked"
-            echo "::set-output name=failure::true"
+            echo "check_failure=true" >> $GITHUB_ENV
           else
             echo "Was not chcked"
-            echo "::set-output name=failure::false"
+            echo "check_failure=false" >> $GITHUB_ENV
           fi
 
       - name: Close issue if checkbox is unchecked
-        if: steps.checkbox-check.outputs.failure == 'true'
+        if: $check_failure == 'true'
         run: |
           gh issue close ${{ github.event.issue.number }} --comment "Auto-closing issue"
         env:
